@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import filedialog, ttk, messagebox
 import pandas as pd
+from datetime import datetime, timedelta
 
 class SAProcess:
     def __init__(self, root):
@@ -46,10 +47,9 @@ class SAProcess:
             return  # No file selected
 
         try:
-            # Read the CSV file
             df = pd.read_csv(file_path)
 
-            # Remove columns D to N and columns Q to V
+            # Remove columns 
             columns_to_remove = ['SKU', 'Sessions - Total', 'Sessions - Total - B2B', 'Session Percentage - Total',
                                 'Session Percentage - Total - B2B', 'Page Views - Total', 'Page Views - Total - B2B',
                                 'Page Views Percentage - Total', 'Page Views Percentage - Total - B2B',
@@ -59,19 +59,46 @@ class SAProcess:
 
             df = df.drop(columns=columns_to_remove, axis=1)
 
-            # Move columns O and P right of column C
-            df.insert(3, 'Units Ordered', df.pop('Units Ordered'))
-            df.insert(4, 'Units Ordered - B2B', df.pop('Units Ordered - B2B'))
+            # sum of each row under 'Units Ordered' and 'Units Ordered - B2B'
+            df['Total Units Ordered'] = df[['Units Ordered', 'Units Ordered - B2B']].sum(axis=1)
+
+            # Remove 'Units Ordered' and 'Units Ordered - B2B' columns
+            df = df.drop(['Units Ordered', 'Units Ordered - B2B'], axis=1)
+
+            # Move 'Total Units Ordered' column to the right of the 'Title' column
+            df = pd.concat([df[['(Parent) ASIN', '(Child) ASIN', 'Title']], df['Total Units Ordered'], df.drop(['(Parent) ASIN', '(Child) ASIN', 'Title', 'Total Units Ordered'], axis=1)], axis=1)
+
+            # Generate the new file name based on the original file name
+            original_file_name = file_path.split("/")[-1]  # Extract the file name from the path
+            new_file_name = self.generate_new_file_name(original_file_name)
 
             # Save the modified DataFrame to a new CSV file
-            new_file_path = filedialog.asksaveasfilename(defaultextension=".csv", filetypes=[("CSV files", "*.csv")])
+            new_file_path = filedialog.asksaveasfilename(defaultextension=".csv", filetypes=[("CSV files", "*.csv")], initialfile=new_file_name)
             if new_file_path:
                 df.to_csv(new_file_path, index=False)
                 messagebox.showinfo("Success", "Processing complete. New file saved successfully.")
+
         except Exception as e:
             messagebox.showerror("Error", f"An error occurred: {str(e)}")
 
-
+    def generate_new_file_name(self, original_file_name):
+        if original_file_name.endswith("-24.csv"):
+            today = datetime.now().strftime("%Y.%m.%d")
+            return f"{today} - 7 Day Sales.csv"
+        elif original_file_name.endswith("(1).csv"):
+            today = datetime.now().strftime("%Y.%m.%d")
+            return f"{today} - 15 Day Sales.csv"
+        elif original_file_name.endswith("(2).csv"):
+            today = datetime.now().strftime("%Y.%m.%d")
+            return f"{today} - 30 Day Sales.csv"
+        elif original_file_name.endswith("(3).csv"):
+            today = datetime.now().strftime("%Y.%m.%d")
+            return f"{today} - 60 Day Sales.csv"
+        elif original_file_name.endswith("(4).csv"):
+            today = datetime.now().strftime("%Y.%m.%d")
+            return f"{today} - 90 Day Sales.csv"
+        else:
+            return f"Processed_{original_file_name}"
 
 
     def process2(self):
