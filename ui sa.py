@@ -15,7 +15,7 @@ class SAProcess:
         self.frame = ttk.Frame(self.root, padding=20)
         self.frame.pack(fill=tk.BOTH, expand=True)
 
-        custom_font = ("Arial", 10)  # Decrease the font size
+        custom_font = ("Arial", 10)  
 
         self.select_file_button = ttk.Button(self.frame, text="Select File", command=self.select_file, style="TButton", width=20)
         self.select_file_button.pack(pady=10, anchor="center")
@@ -44,5 +44,3 @@ class SAProcess:
 root = tk.Tk()
 app = SAProcess(root)
 root.mainloop()
-
-
