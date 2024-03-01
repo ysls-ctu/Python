@@ -44,3 +44,8 @@ class SAProcess:
 root = tk.Tk()
 app = SAProcess(root)
 root.mainloop()
+
+# the user interface of the daily sales report desktop app created with python
+# using tkinter as the framework of the ui
+# needs to be inserted or committed to github for backup
+
