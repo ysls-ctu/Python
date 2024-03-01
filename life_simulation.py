@@ -118,3 +118,30 @@ def show_game_ui():
     update_ui()
 
 root.mainloop()
+
+
+# research environment and research procedure
+
+# def to_last_row():
+#     import openpyxl
+
+#     workbook = openpyxl.load_workbook('c:\\Users\\User.DESKTOP-FC21VHI\\Documents\\SOS - SalasY 1217\\BDG.xlsx')
+
+
+#     sheet = workbook.active
+
+#     last_row = sheet.max_row
+
+#     last_value = sheet.cell(row = last_row, column = 1).value
+
+#     while last_value == "" and last_row > 1:
+#         last_row -= 1
+#         last_value = sheet.cell(row = last_row, column = 1).value
+    
+#     sheet.cell(row = last_row, column = 1).coordinate
+
+#     workbook.save('c:\\Users\\User.DESKTOP-FC21VHI\\Documents\\SOS - SalasY 1217\\BDG - Updated.xlsx')
+
+# to_last_row()
+
+
